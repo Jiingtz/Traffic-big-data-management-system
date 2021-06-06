@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+*.css linguist-language=python
 # Distribution / packaging
 .Python
 build/
