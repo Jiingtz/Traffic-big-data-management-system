@@ -1,0 +1,249 @@
+{% load static %}
+<!doctype html>
+<html class="no-js h-100" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>trafficMap</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <link href="{% static "css/all.css" %}" rel="stylesheet">
+    <link href="{% static "css/Gobutton.css" %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/jquery-ui.css" %}">
+    <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0"
+          href="{% static "styles/shards-dashboards.1.1.0.min.css" %}">
+    <script async defer src="{% static "js/buttons.js" %}"></script>
+
+</head>
+<body class="h-100">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Sidebar -->
+        <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0">
+            <div class="main-navbar">
+                <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+                    <a class="navbar-brand w-100 mr-0" href="#" style="line-height: 35px;">
+                        <div class="d-table m-auto">
+                            <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 38px;"
+                                 src="{% static "images/Icon.svg" %}" alt="Shards Dashboard">
+                            <span style="font-size: 20px"
+                                  class="d-none d-md-inline ml-1">&nbsp;&nbsp;智能交通系统</span>
+                        </div>
+                    </a>
+                    <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
+                        <i class="material-icons">&#xE5C4;</i>
+                    </a>
+                </nav>
+            </div>
+            <div class="nav-wrapper">
+                {#                <form method="post" action="">#}
+                {#                    {% csrf_token %}#}
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="material-icons">edit</i>
+                            <span>起：</span>
+                            <input id="origin" name="origin" class="navbar-search form-control" type="text"
+                                   placeholder="输入出发地"
+                                   aria-label="Search">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="#">
+                            <i class="material-icons">vertical_split</i>
+                            <span>终：</span>
+                            <input id="destination" name="destination" class="navbar-search form-control" type="text"
+                                   placeholder="输入目的地"
+                                   aria-label="Search">
+                        </a>
+                    </li>
+                    <br>
+                    <div style="text-align:center">
+                        <a id="pathplanning" href="#" style="color: white">
+                            <button type="button" class="button">
+                                <span>路径规划</span>
+                            </button>
+                        </a>
+                    </div>
+                    {#                    <li class="nav-item">#}
+                    {#                        <a class="nav-link " href="form-components.html">#}
+                    {#                            <i class="material-icons">view_module</i>#}
+                    {#                            <span>Forms &amp; Components</span>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
+                </ul>
+                {#                </form>#}
+            </div>
+        </aside>
+        <!-- End Main Sidebar -->
+        <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3">
+            <div class="main-navbar sticky-top bg-white">
+                <!-- Main Navbar -->
+                <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
+                    <div class="input-group input-group-seamless ml-3">
+                        <div class="input-group-prepend">
+                            <div class="d-table m-auto">
+                                <img id="main-logo" class="d-inline-block align-top mr-1"
+                                     style="max-width: 28px;" src="{% static "images/location.svg" %}" alt="导航图标">
+                            </div>
+                        </div>&nbsp;&nbsp;
+                        <input id="searchKey" class="navbar-search form-control" type="text"
+                               placeholder="搜索位置、道路...." name="search"
+                               aria-label="Search" style="border: none">
+                    </div>
+                    <ul class="navbar-nav border-left flex-row ">
+                        <li class="nav-item border-right dropdown notifications">
+                            <a class="nav-link nav-link-icon text-center" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div class="nav-link-icon__wrapper">
+                                    <i class="material-icons">&#xE7F4;</i>
+                                    <span class="badge badge-pill badge-danger">2</span>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-small" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#">
+                                    <div class="notification__icon-wrapper">
+                                        <div class="notification__icon">
+                                            <i class="material-icons">&#xE6E1;</i>
+                                        </div>
+                                    </div>
+                                    <div class="notification__content">
+                                        <span class="notification__category">天气预报</span>
+                                        <iframe width="300" height="30" frameborder="0" scrolling="no" hspace="0"
+                                                src="https://i.tianqi.com/?c=code&a=getcode&id=34&py=xiamen&icon=1"></iframe>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <div class="notification__icon-wrapper">
+                                        <div class="notification__icon">
+                                            <i class="material-icons">&#xE8D1;</i>
+                                        </div>
+                                    </div>
+                                    <div class="notification__content">
+                                        <span class="notification__category">路况提醒</span>
+                                        {#                                        <p>Last week your store’s sales count decreased by#}
+                                        {#                                            <span class="text-danger text-semibold">5.52%</span>. It could have been#}
+                                        {#                                            worse!</p>#}
+                                    </div>
+                                </a>
+                                {#                                <a class="dropdown-item notification__all text-center" href="#"> View all#}
+                                {#                                    Notifications </a>#}
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#"
+                               role="button" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-none d-md-inline-block">用户主页</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-small">
+                                <a class="dropdown-item" href="#">
+                                    <i class="material-icons">&#xE7FD;</i> Profile</a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="material-icons">vertical_split</i> Blog Posts</a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="material-icons">note_add</i> Add New Post</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="#">
+                                    <i class="material-icons text-danger">&#xE879;</i> Logout </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <nav class="nav">
+                        <a href="#"
+                           class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left"
+                           data-toggle="collapse" data-target=".header-navbar" aria-expanded="false"
+                           aria-controls="header-navbar">
+                            <i class="material-icons">&#xE5D2;</i>
+                        </a>
+                    </nav>
+                </nav>
+            </div>
+            <!-- / .main-navbar -->
+            <iframe name="map" id="frame" src="{% url 'Map' %}" width="100%" height="610px" frameborder="0"></iframe>
+        </main>
+    </div>
+</div>
+<script src="{% static "scripts/jquery.min.js" %}"></script>
+<script src="{% static "js/jquery-ui.js" %}"></script>
+<script src="{% static "scripts/popper.min.js" %}"></script>
+<script src="{% static "scripts/bootstrap.min.js" %}"></script>
+<script src="{% static "scripts/jquery.sharrre.min.js" %}"></script>
+<script src="{% static "scripts/extras.1.1.0.min.js" %}"></script>
+<script>
+    $('#searchKey').on('input', function () {
+        association();
+    })
+
+    function association() {
+        var searchData = $('#searchKey').val()
+        {#console.log(searchData)#}
+        $.ajax({
+            url: "/analysis/associate",
+            type: 'post',
+            dataType: "json",
+            data: {
+                'searchData': searchData,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (data) {
+                var res = data.association;
+                console.log(res)
+                $("#searchKey").autocomplete({
+                    source: res,
+                    //定义至少输入几个字符就可以查询
+                    minLength: 1
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    var origin = null;
+    var destination = null;
+    $('#pathplanning').on('click', function () {
+        origin = $('#origin').val()
+        destination = $('#destination').val()
+        $('#frame').attr('src', $('#frame').attr('src'));
+        {#document.getElementById('frame').contentWindow.location.reload(true);#}
+    })
+</script>
+
+
+{# 道路检索#}
+<script>
+    var route = null
+    var keyword = null
+    $('#searchKey').bind('keypress', function (event) {
+        if (event.keyCode == 13) {
+            get_route()
+        }
+    });
+
+    function get_route() {
+        keyword = $('#searchKey').val()
+        console.log('搜索关键词：'+keyword)
+        $.ajax({
+            url: "/analysis/Map",
+            type: 'post',
+            dataType: "json",
+            data: {
+                'searchRoad': keyword,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (data) {
+                route = data.road_path;
+                {#console.log(route)#}
+                $('#frame').attr('src', $('#frame').attr('src'));
+            }
+        });
+    }
+
+
+</script>
+
+</body>
+</html>

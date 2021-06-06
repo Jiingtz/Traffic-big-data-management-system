@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+    var fakeLocation = [{"code": 101, "msg": {"lat": 1, "lon": 2}},
+        {"code": 101, "msg": {"lat": 10, "lon": 20}}];
+    var locIndex = 0, loopIndex = 0;
+    $(function () {
+        var ws = new WebSocket("ws://127.0.0.1:8000/trafficSituation/");
+        ws.onopen = function (e) {
+            let connectMsg = {"code": 100, "msg": {}};
+            ws.send(JSON.stringify(connectMsg));
+        };
+        ws.onmessage = function (e) {
+            var received_msg = JSON.parse(e.data);
+            console.log(received_msg["msg"]);
+        };
+        ws.onerror = function (e) {
+            console.log(e);
+        };
+        ws.onclose = function (e) {
+            console.log(e)
+            alert("链接关闭");
+        };
+        function sendFackLocation() {
+            ws.send(JSON.stringify(fakeLocation[locIndex]));
+            loopIndex++;
+            if (loopIndex === 3) {
+                loopIndex = 0;
+                locIndex ^= 1;
+            }
+        }
+        var int = self.setInterval(sendFackLocation, 2000);
+    });
+</script>
+</html>

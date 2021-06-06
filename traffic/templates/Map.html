@@ -1,0 +1,207 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>轨迹回放</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <style type="text/css">
+        #panel {
+            position: absolute;
+            background-color: white;
+            max-height: 90%;
+            overflow-y: auto;
+            top: 10px;
+            right: 10px;
+            width: 280px;
+        }
+    </style>
+    <style>
+        html, body, #container {
+            height: 100%;
+            width: 100%;
+        }
+
+        .input-card .btn {
+            margin-right: 1.2rem;
+            width: 9rem;
+        }
+
+        .input-card .btn:last-child {
+            margin-right: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<div class="info" id="text">
+    请用鼠标在地图上操作试试
+</div>
+<div id="panel"></div>
+
+<div class="input-card">
+    <h4>行驶轨迹</h4>
+    <div class="input-item">
+        <input type="button" class="btn" value="开始动画" id="start" onclick="startAnimation()"/>
+        <input type="button" class="btn" value="暂停动画" id="pause" onclick="pauseAnimation()"/>
+    </div>
+    <div class="input-item">
+        <input type="button" class="btn" value="继续动画" id="resume" onclick="resumeAnimation()"/>
+        <input type="button" class="btn" value="停止动画" id="stop" onclick="stopAnimation()"/>
+    </div>
+</div>
+<script type="text/javascript"
+        src="https://webapi.amap.com/maps?v=1.4.15&key=d49cb25a2498cc9be52a04d641f06a96">
+</script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script src="{% static "scripts/jquery.min.js" %}"></script>
+<script>
+    var keyword = parent.keyword
+    var road_path = parent.route
+    console.log('道路轨迹：' + road_path)
+    var marker,
+        {#lineArr = [[118.094709, 24.580074], [118.094644, 24.579484], [118.095391, 24.579405], [118.095712, 24.579284], [118.09602, 24.579123], [118.09612, 24.579036], [118.096198, 24.578967], [118.096311, 24.57885], [118.096372, 24.57878], [118.096471, 24.578607], [118.096528, 24.578485], [118.096567, 24.578247], [118.096484, 24.577535], [118.096636, 24.577513], [118.096827, 24.577491], [118.096723, 24.577222], [118.096615, 24.576957], [118.096549, 24.576801], [118.096484, 24.576641], [118.096389, 24.576415], [118.09612, 24.575768], [118.095751, 24.5749], [118.095686, 24.574744], [118.095616, 24.574583], [118.095525, 24.574375], [118.09543, 24.574167], [118.09477, 24.574145], [118.094223, 24.574145], [118.093685, 24.574132], [118.093316, 24.574141], [118.092049, 24.574141], [118.091667, 24.574141], [118.091393, 24.574141], [118.091224, 24.574123], [118.090994, 24.574106], [118.090751, 24.574232], [118.090677, 24.574288], [118.090616, 24.574375], [118.090595, 24.574596], [118.09072, 24.575768], [118.090734, 24.576063], [118.090703, 24.576185], [118.090742, 24.576415], [118.090868, 24.577201], [118.091528, 24.580608], [118.091979, 24.582899], [118.092582, 24.585964], [118.092756, 24.586966], [118.092821, 24.5874], [118.092878, 24.587808], [118.093043, 24.58901], [118.093281, 24.591532], [118.093385, 24.592782], [118.093429, 24.593216], [118.093524, 24.594332], [118.093689, 24.596354], [118.09372, 24.596632], [118.093819, 24.597669], [118.093854, 24.59806], [118.093885, 24.598385], [118.093889, 24.598451], [118.094006, 24.599631], [118.094132, 24.601163], [118.094141, 24.601272], [118.09428, 24.603316], [118.094297, 24.604132], [118.094297, 24.604605], [118.094236, 24.605434], [118.094145, 24.606102], [118.094041, 24.606723], [118.093993, 24.606936], [118.093915, 24.607244], [118.093798, 24.607661], [118.093698, 24.607999], [118.093455, 24.608681], [118.093203, 24.60928], [118.09316, 24.609375], [118.092869, 24.609961], [118.092522, 24.610595], [118.092309, 24.610955], [118.091862, 24.611606], [118.091628, 24.611927], [118.091007, 24.612682], [118.090495, 24.613234], [118.089505, 24.61421], [118.089162, 24.614527], [118.088676, 24.615], [118.088368, 24.615295], [118.088316, 24.61543], [118.088242, 24.61553], [118.087743, 24.616063], [118.087678, 24.616181], [118.087652, 24.616302], [118.087678, 24.616454], [118.087717, 24.616541], [118.087773, 24.616615], [118.087821, 24.616658], [118.087878, 24.61684], [118.087847, 24.616957], [118.087526, 24.617257], [118.087075, 24.617691], [118.08674, 24.618016], [118.086246, 24.618485], [118.085013, 24.61967], [118.084405, 24.620269], [118.084523, 24.62036], [118.084622, 24.620434]];#}
+        lineArr = road_path;
+
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [118.087898, 24.623911],  //地图中心点
+        zoom: 11  //地图显示的缩放级别
+    });
+
+    //添加组件
+    AMap.plugin(['AMap.ToolBar', 'AMap.PlaceSearch', 'AMap.Geocoder', 'AMap.Driving', 'AMap.Scale'], function () {//异步加载插件
+        var toolbar = new AMap.ToolBar();		//工具条缩放
+        var Geocoder = new AMap.Geocoder();		//点击
+        var Scale = new AMap.Scale()    //比例尺
+        var PlaceSearch = new AMap.PlaceSearch({
+            pageSize: 4, // 单页显示结果条数
+            pageIndex: 1, // 页码
+            city: "厦门", // 兴趣点城市
+            citylimit: true,  //是否强制限制在设置的城市内搜索
+            map: map, // 展现结果的地图实例
+            panel: "panel", // 结果列表将在此容器中进行展示。
+            autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+        })    //关键词搜索
+        //加载地图导航组件
+        var driving = new AMap.Driving({
+            map: map
+        });
+        map.addControl(toolbar);
+        map.addControl(Geocoder);
+        map.addControl(Scale);
+        map.addControl(PlaceSearch);
+
+        var origin = parent.origin
+        var destination = parent.destination
+        console.log('出发地：'+origin)
+        console.log('目的地：'+destination)
+        driving.search([
+            {keyword: origin, city: '厦门'},
+            {keyword: destination, city: '厦门'}
+        ], function (status, result) {
+            // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+            var pathList = result['routes'][0]['steps']
+            console.log(pathList)
+
+            $.ajax({
+                url: '/analysis/pathPlanning',
+                type: 'post',
+                {#dataType: "json",#}
+                data: {
+                    'pathList': JSON.stringify(pathList),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    route = data.pathList;
+                    {#console.log(route)#}
+                    $('#frame').attr('src', $('#frame').attr('src'));
+                }
+            })
+            if (status === 'complete') {
+                log.success('绘制驾车路线完成')
+            } else {
+                log.error('获取驾车数据失败：' + result)
+            }
+
+        });
+
+
+        //关键字查询
+        PlaceSearch.search(keyword, function (status, result) {
+            // 查询成功时，result即对应匹配的POI信息
+            driving.clear()
+            console.log('搜索关键词：'+result)
+        });
+    });
+
+
+    map.on('click', showInfoClick);//地图点击事件
+    //点击事件，返回坐标值
+    function showInfoClick(e) {
+        var text = '您在 [ ' + e.lnglat.getLng() + ',' + e.lnglat.getLat() + ' ] 的位置双击了地图！'
+        document.querySelector("#text").innerText = text;
+    }
+
+
+    marker = new AMap.Marker({
+        map: map,
+        position: lineArr[0],
+        {#position: [118.094709, 24.580074],#}
+        icon: "../static/images/black_car.png",
+        offset: new AMap.Pixel(-26, -13),
+        autoRotation: true,
+        angle: -90,
+    });
+
+    // 绘制轨迹
+    var polyline = new AMap.Polyline({
+        map: map,
+        path: lineArr,
+        showDir: true,
+        strokeColor: "#28F",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
+
+    var passedPolyline = new AMap.Polyline({
+        map: map,
+        // path: lineArr,
+        strokeColor: "#AF5",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
+
+
+    marker.on('moving', function (e) {
+        passedPolyline.setPath(e.passedPath);
+    });
+
+    map.setFitView();
+
+    function startAnimation() {
+        marker.moveAlong(lineArr, 200);
+    }
+
+    function pauseAnimation() {
+        marker.pauseMove();
+    }
+
+    function resumeAnimation() {
+        marker.resumeMove();
+    }
+
+    function stopAnimation() {
+        marker.stopMove();
+    }
+</script>
+
+</body>
+</html>
