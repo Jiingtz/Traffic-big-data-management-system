@@ -52,12 +52,6 @@ def associate(request):
     searchData = request.POST.get('searchData')
     data = []
     try:
-        # searchSql = "SELECT address_name FROM `集美区道路` WHERE address_name LIKE '{}' LIMIT 10;".format(
-        #     '%' + searchData + '%')
-        # cursor.execute(searchSql)
-        # originalData = cursor.fetchall()
-        # for d in originalData:
-        #     data.append(d[0])
         query = es.search(body={
             "query": {
                 "fuzzy": {
@@ -88,6 +82,6 @@ def pathPlanning(request):
                 if [node['lng'], node['lat']] not in nodes:
                     nodes.append([node['lng'], node['lat']])
         print(nodes)
-        return JsonResponse({'pathList': pathList}, safe=False)
+        return JsonResponse({'nodes': nodes}, safe=False)
     except:
         return render(request, 'Map.html')

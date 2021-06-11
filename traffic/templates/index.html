@@ -123,10 +123,8 @@
                                         </div>
                                     </div>
                                     <div class="notification__content">
-                                        <span class="notification__category">路况提醒</span>
-                                        {#                                        <p>Last week your store’s sales count decreased by#}
-                                        {#                                            <span class="text-danger text-semibold">5.52%</span>. It could have been#}
-                                        {#                                            worse!</p>#}
+                                        <span class="notification__category">天气提醒</span>
+                                        <p>即将下雨，注意出行安全。</p>
                                     </div>
                                 </a>
                                 {#                                <a class="dropdown-item notification__all text-center" href="#"> View all#}
@@ -208,7 +206,6 @@
         origin = $('#origin').val()
         destination = $('#destination').val()
         $('#frame').attr('src', $('#frame').attr('src'));
-        {#document.getElementById('frame').contentWindow.location.reload(true);#}
     })
 </script>
 
@@ -225,7 +222,7 @@
 
     function get_route() {
         keyword = $('#searchKey').val()
-        console.log('搜索关键词：'+keyword)
+        console.log('搜索关键词：' + keyword)
         $.ajax({
             url: "/analysis/Map",
             type: 'post',

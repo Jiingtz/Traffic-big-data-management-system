@@ -112,13 +112,12 @@
             $.ajax({
                 url: '/analysis/pathPlanning',
                 type: 'post',
-                {#dataType: "json",#}
                 data: {
                     'pathList': JSON.stringify(pathList),
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 success: function (data) {
-                    route = data.pathList;
+                    route = data.nodes;
                     {#console.log(route)#}
                     $('#frame').attr('src', $('#frame').attr('src'));
                 }
@@ -169,7 +168,6 @@
         strokeWeight: 6,      //线宽
         // strokeStyle: "solid"  //线样式
     });
-
     var passedPolyline = new AMap.Polyline({
         map: map,
         // path: lineArr,
